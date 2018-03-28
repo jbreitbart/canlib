@@ -7,17 +7,16 @@ import (
 // TestRawCanFrameToString will verify that a CAN message is formatted properly
 func TestRawCanFrameToString(t *testing.T) {
 	testFrame := RawCanFrame{
-		OID:              1,
-		ID:               1,
-		Dlc:              1,
-		Eff:              false,
-		Rtr:              false,
-		Err:              false,
-		Data:             []byte{1},
-		Timestamp:        1000000000,
-		CaptureInterface: "test",
+		OID:       1,
+		ID:        1,
+		Dlc:       1,
+		Eff:       false,
+		Rtr:       false,
+		Err:       false,
+		Data:      []byte{1},
+		Timestamp: 1000000000,
 	}
-	expected := "test,1,1,NOEFF,NORTR,NOERR,1,1,01"
+	expected := "1,1,NOEFF,NORTR,NOERR,1,1,01"
 	result := RawCanFrameToString(testFrame, ",")
 	if expected != result {
 		t.Errorf("%s != %s", expected, result)
@@ -37,19 +36,18 @@ func TestTimestampToSeconds(t *testing.T) {
 // TestProcessedCanFrameToString makes sure that ProcessedCanFrameToString works
 func TestProcessedCanFrameToString(t *testing.T) {
 	testRawFrame := RawCanFrame{
-		OID:              1,
-		ID:               1,
-		Dlc:              1,
-		Eff:              false,
-		Rtr:              false,
-		Err:              false,
-		Data:             []byte{1},
-		Timestamp:        1000000000,
-		CaptureInterface: "test",
+		OID:       1,
+		ID:        1,
+		Dlc:       1,
+		Eff:       false,
+		Rtr:       false,
+		Err:       false,
+		Data:      []byte{1},
+		Timestamp: 1000000000,
 	}
 	testProcessedFrame := ProcessedCanFrame{Packet: testRawFrame,
 		PacketHash: "testHash"}
-	expected := "testHash,test,1,1,NOEFF,NORTR,NOERR,1,1,01"
+	expected := "testHash,1,1,NOEFF,NORTR,NOERR,1,1,01"
 	result := ProcessedCanFrameToString(testProcessedFrame, ",")
 	if expected != result {
 		t.Errorf("%s != %s", expected, result)

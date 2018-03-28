@@ -9,17 +9,16 @@ import (
 func TestByteArrayToCanFrame(t *testing.T) {
 	frame := []byte{109, 237, 19, 137, 8, 0, 0, 0, 15, 234, 197, 79, 101, 147, 251, 118}
 	expected := RawCanFrame{
-		OID:              2299784557,
-		ID:               152300909,
-		Rtr:              false,
-		Err:              false,
-		Eff:              true,
-		Dlc:              8,
-		Data:             []byte{15, 234, 197, 79, 101, 147, 251, 118},
-		CaptureInterface: "test",
+		OID:  2299784557,
+		ID:   152300909,
+		Rtr:  false,
+		Err:  false,
+		Eff:  true,
+		Dlc:  8,
+		Data: []byte{15, 234, 197, 79, 101, 147, 251, 118},
 	}
 	var result = new(RawCanFrame)
-	ByteArrayToCanFrame(frame, result, 0, "test")
+	ByteArrayToCanFrame(frame, result, 0)
 	if result.OID != expected.OID {
 		t.Error("OID mismatch")
 	} else if result.ID != expected.ID {
@@ -34,8 +33,6 @@ func TestByteArrayToCanFrame(t *testing.T) {
 		t.Error("data length mismatch")
 	} else if bytes.Equal(result.Data, expected.Data) != true {
 		t.Error("data value mismatch")
-	} else if result.CaptureInterface != expected.CaptureInterface {
-		t.Errorf("capture interface mismatch")
 	}
 }
 
@@ -44,9 +41,9 @@ func BenchmarkByteArrayToCanFrame(b *testing.B) {
 	frame := []byte{109, 237, 19, 137, 8, 0, 0, 0, 15, 234, 197, 79, 101, 147, 251, 118}
 	var result = new(RawCanFrame)
 	b.ResetTimer()
-	ByteArrayToCanFrame(frame, result, 0, "test")
+	ByteArrayToCanFrame(frame, result, 0)
 	for i := 0; i < b.N; i++ {
-		ByteArrayToCanFrame(frame, result, 0, "test")
+		ByteArrayToCanFrame(frame, result, 0)
 	}
 }
 
@@ -89,15 +86,14 @@ func BenchmarkProcessRawCan(b *testing.B) {
 // TestProcessCandump will verify that candump messages are appropriately converted to rawcanframe
 func TestProcessCandump(t *testing.T) {
 	expected := RawCanFrame{
-		OID:              0,
-		ID:               1,
-		Rtr:              false,
-		Eff:              false,
-		Err:              false,
-		Dlc:              1,
-		Data:             []byte{1},
-		Timestamp:        1000000000,
-		CaptureInterface: "test",
+		OID:       0,
+		ID:        1,
+		Rtr:       false,
+		Eff:       false,
+		Err:       false,
+		Dlc:       1,
+		Data:      []byte{1},
+		Timestamp: 1000000000,
 	}
 	result := RawCanFrame{}
 	ProcessCandump(&result, "(1) test 1#1")
@@ -119,15 +115,14 @@ func BenchmarkProcessCandump(b *testing.B) {
 func TestProcessCanalyze(t *testing.T) {
 	example := "vcan0   1513023350.178403       1     NOEFF   NORTR   NOERR   1     2       21 22"
 	expected := RawCanFrame{
-		OID:              1,
-		ID:               1,
-		Rtr:              false,
-		Eff:              false,
-		Err:              false,
-		Dlc:              2,
-		Data:             []byte{33, 34},
-		Timestamp:        1513023350178402816,
-		CaptureInterface: "vcan0",
+		OID:       1,
+		ID:        1,
+		Rtr:       false,
+		Eff:       false,
+		Err:       false,
+		Dlc:       2,
+		Data:      []byte{33, 34},
+		Timestamp: 1513023350178402816,
 	}
 	result := RawCanFrame{}
 	ProcessCanalyzeLog(&result, example)

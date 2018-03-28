@@ -5,16 +5,16 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"golang.org/x/sys/unix"
 	"strconv"
 	"strings"
+
+	"golang.org/x/sys/unix"
 )
 
 // ByteArrayToCanFrame converts a byte array containing a CAN packet and converts it into a RawCanFrame
-func ByteArrayToCanFrame(array []byte, canMessage *RawCanFrame, captureTime int64, capIface string) {
+func ByteArrayToCanFrame(array []byte, canMessage *RawCanFrame, captureTime int64) {
 	canMessage.OID = binary.LittleEndian.Uint32(array[0:4])
 	canMessage.ID = canMessage.OID
-	canMessage.CaptureInterface = capIface
 
 	// Check for the RTR Flag
 	if canMessage.ID&unix.CAN_RTR_FLAG != 0 {
@@ -64,7 +64,6 @@ func ProcessCandump(processed *RawCanFrame, frame string) error {
 		return errors.New("parsing time failed: " + err.Error())
 	}
 	processed.Timestamp = int64(timeFloat * 1000000000)
-	processed.CaptureInterface = splitSpaces[1]
 	splitPacket := strings.Split(splitSpaces[2], "#")
 	idInt, err := strconv.ParseUint(splitPacket[0], 16, 32)
 	if err != nil {
@@ -89,7 +88,6 @@ func ProcessCanalyzeLog(processed *RawCanFrame, frame string) error {
 			cleanSplit = append(cleanSplit, str)
 		}
 	}
-	processed.CaptureInterface = cleanSplit[0]
 	time, err := strconv.ParseFloat(cleanSplit[1], 64)
 	if err != nil {
 		return errors.New("parsing time failed: " + err.Error())

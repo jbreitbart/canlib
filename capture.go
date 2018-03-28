@@ -1,28 +1,27 @@
 package canlib
 
 import (
-	"errors"
-	"golang.org/x/sys/unix"
+	"fmt"
 	"time"
+
+	"golang.org/x/sys/unix"
 )
 
 // CaptureCan will listen to the provided SocketCAN interface and add any messages seen to the provided channel
-func CaptureCan(canInterface string, canChannel chan<- RawCanFrame, errorChannel chan<- error) {
-	canFD, err := SetupCanInterface(canInterface)
-	if err != nil {
-		errorChannel <- errors.New("error setting up CAN interface: " + err.Error())
-		return
-	}
-
+func CaptureCan(canInterface CANInterfaceDescriptor, canChannel chan<- RawCanFrame, errorChannel chan<- error) {
 	frame := make([]byte, 16)
 	canmsg := new(RawCanFrame)
 	for {
-		unix.Read(canFD, frame)
+		n, err := unix.Read(int(canInterface), frame)
+		if err != nil {
+			errorChannel <- err
+		}
+		if n != 16 {
+			errorChannel <- fmt.Errorf("Could only write %v of 16 bytes to socket.", n)
+		}
+
 		captime := time.Now().UnixNano()
-		ByteArrayToCanFrame(frame, canmsg, captime, canInterface)
+		ByteArrayToCanFrame(frame, canmsg, captime)
 		canChannel <- *canmsg
 	}
-
-	errorChannel <- nil
-	close(errorChannel)
 }
