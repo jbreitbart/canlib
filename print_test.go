@@ -4,20 +4,15 @@ import (
 	"testing"
 )
 
-// TestRawCanFrameToString will verify that a CAN message is formatted properly
-func TestRawCanFrameToString(t *testing.T) {
-	testFrame := RawCanFrame{
+// TestCanFrameToString will verify that a CAN message is formatted properly
+func TestCanFrameToString(t *testing.T) {
+	testFrame := CanFrame{
 		OID:       1,
-		ID:        1,
-		Dlc:       1,
-		Eff:       false,
-		Rtr:       false,
-		Err:       false,
 		Data:      []byte{1},
 		Timestamp: 1000000000,
 	}
 	expected := "1,1,NOEFF,NORTR,NOERR,1,1,01"
-	result := RawCanFrameToString(testFrame, ",")
+	result := CanFrameToString(testFrame, ",")
 	if expected != result {
 		t.Errorf("%s != %s", expected, result)
 	}
@@ -35,13 +30,8 @@ func TestTimestampToSeconds(t *testing.T) {
 
 // TestProcessedCanFrameToString makes sure that ProcessedCanFrameToString works
 func TestProcessedCanFrameToString(t *testing.T) {
-	testRawFrame := RawCanFrame{
+	testRawFrame := CanFrame{
 		OID:       1,
-		ID:        1,
-		Dlc:       1,
-		Eff:       false,
-		Rtr:       false,
-		Err:       false,
 		Data:      []byte{1},
 		Timestamp: 1000000000,
 	}

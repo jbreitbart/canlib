@@ -73,7 +73,7 @@ func main() {
 	check(err)
 
 	// Create channels
-	canout := make(chan canlib.RawCanFrame, 100)
+	canout := make(chan canlib.CanFrame, 100)
 	errChan := make(chan error)
 	targetIDs := readIds(*targetFile)
 
@@ -107,7 +107,7 @@ func readIds(path string) []uint32 {
 }
 
 // fuzzCan will generate fuzz frames for the CAN bus and pass them to the CanSend goroutine via channel
-func fuzzCan(targets []uint32, output chan<- canlib.RawCanFrame, iterBeforeDisplay int, dataStart uint64, sizeStart int, rateLimit int) {
+func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay int, dataStart uint64, sizeStart int, rateLimit int) {
 	fuzzDataStart := dataStart
 	fuzzSizeStart := sizeStart
 	displayTracker := iterBeforeDisplay
@@ -133,7 +133,7 @@ func fuzzCan(targets []uint32, output chan<- canlib.RawCanFrame, iterBeforeDispl
 
 			// For each ID in the ID list, craft and send the packet
 			for _, target := range targets {
-				fuzzFrame, err := canlib.CreateRawFrame(uint32(target), fuzzBytes, false, false, false)
+				fuzzFrame, err := canlib.CreateRawFrame(uint32(target), fuzzBytes, false, false)
 				if err != nil {
 
 				}

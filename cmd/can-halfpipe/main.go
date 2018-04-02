@@ -25,11 +25,11 @@ func main() {
 	}
 	defer canlib.CloseCanInterface(canFDOut)
 
-	canGlobalChan := make(chan canlib.RawCanFrame, 100)
-	canTargetChan := make(chan canlib.RawCanFrame, 100)
-	canMultiplexOne := make(chan canlib.RawCanFrame, 100)
-	canMultiplexTwo := make(chan canlib.RawCanFrame, 100)
-	output := make(chan canlib.RawCanFrame, 100)
+	canGlobalChan := make(chan canlib.CanFrame, 100)
+	canTargetChan := make(chan canlib.CanFrame, 100)
+	canMultiplexOne := make(chan canlib.CanFrame, 100)
+	canMultiplexTwo := make(chan canlib.CanFrame, 100)
+	output := make(chan canlib.CanFrame, 100)
 	errChan := make(chan error)
 
 	go canlib.CaptureCan(canFDIn, canGlobalChan, errChan)
@@ -45,8 +45,8 @@ func main() {
 }
 
 // globalMultiplex will read a value from globalChan and sent that value to both mplexOne and mplexTwo
-func globalMultiplex(globalChan <-chan canlib.RawCanFrame, mplexOne chan<- canlib.RawCanFrame,
-	mplexTwo chan<- canlib.RawCanFrame) {
+func globalMultiplex(globalChan <-chan canlib.CanFrame, mplexOne chan<- canlib.CanFrame,
+	mplexTwo chan<- canlib.CanFrame) {
 
 	for message := range globalChan {
 		mplexOne <- message
@@ -56,8 +56,8 @@ func globalMultiplex(globalChan <-chan canlib.RawCanFrame, mplexOne chan<- canli
 }
 
 // processing will start another process to load an array of known messages and then diff that with the target captures
-func processing(targetChan <-chan canlib.RawCanFrame, globalChan <-chan canlib.RawCanFrame, output chan<- canlib.RawCanFrame) {
-	var seenMessages = []canlib.RawCanFrame{}
+func processing(targetChan <-chan canlib.CanFrame, globalChan <-chan canlib.CanFrame, output chan<- canlib.CanFrame) {
+	var seenMessages = []canlib.CanFrame{}
 	var mutex = &sync.Mutex{}
 
 	go func() {
@@ -73,7 +73,7 @@ func processing(targetChan <-chan canlib.RawCanFrame, globalChan <-chan canlib.R
 	for newMessage := range targetChan {
 		mutex.Lock()
 		if canlib.RawFrameInSlice(newMessage, seenMessages) == false {
-			canlib.RawCanFrameToString(newMessage, "\t")
+			canlib.CanFrameToString(newMessage, "\t")
 		}
 		mutex.Unlock()
 	}

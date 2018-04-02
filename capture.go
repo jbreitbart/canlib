@@ -8,11 +8,10 @@ import (
 )
 
 // CaptureCan will listen to the provided SocketCAN interface and add any messages seen to the provided channel
-func CaptureCan(canInterface CANInterfaceDescriptor, canChannel chan<- RawCanFrame, errorChannel chan<- error) {
-	frame := make([]byte, 16)
-	canmsg := new(RawCanFrame)
+func CaptureCan(canInterface CANInterfaceDescriptor, canChannel chan<- CanFrame, errorChannel chan<- error) {
+	bytes := make([]byte, 16)
 	for {
-		n, err := unix.Read(int(canInterface), frame)
+		n, err := unix.Read(int(canInterface), bytes)
 		if err != nil {
 			errorChannel <- err
 		}
@@ -21,7 +20,11 @@ func CaptureCan(canInterface CANInterfaceDescriptor, canChannel chan<- RawCanFra
 		}
 
 		captime := time.Now().UnixNano()
-		ByteArrayToCanFrame(frame, canmsg, captime)
-		canChannel <- *canmsg
+		frame, err := CreateFrameFromByte(bytes, captime)
+		if err != nil {
+			errorChannel <- err
+		}
+
+		canChannel <- frame
 	}
 }

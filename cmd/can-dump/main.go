@@ -17,15 +17,15 @@ func main() {
 	}
 	defer canlib.CloseCanInterface(canFD)
 
-	c := make(chan canlib.RawCanFrame, 100)
+	c := make(chan canlib.CanFrame, 100)
 	errChan := make(chan error)
 	go canlib.CaptureCan(canFD, c, errChan)
 	go printCan(c)
 	<-errChan
 }
 
-func printCan(ch <-chan canlib.RawCanFrame) {
+func printCan(ch <-chan canlib.CanFrame) {
 	for n := range ch {
-		fmt.Println(canlib.RawCanFrameToString(n, " \t"))
+		fmt.Println(canlib.CanFrameToString(n, " \t"))
 	}
 }
