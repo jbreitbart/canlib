@@ -18,6 +18,7 @@ func CreateFrameFromByte(array []byte, captureTime int64) (CanFrame, error) {
 		return ret, errors.New("data too long. Data must be < 8 bytes")
 	}
 	ret.Data = array[8 : 8+Dlc]
+
 	ret.Timestamp = captureTime
 
 	return ret, nil
