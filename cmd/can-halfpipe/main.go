@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/buffersandbeer/canlib"
 	"sync"
+
+	"github.com/jbreitbart/canlib"
 )
 
 func main() {
@@ -12,16 +13,28 @@ func main() {
 	canifaceOut := flag.String("target", "vcan1", "The CAN interface to pipe to")
 	flag.Parse()
 
+	canFDIn, err := canlib.SetupCanInterface(*canifaceIn)
+	if err != nil {
+		panic(err)
+	}
+	defer canlib.CloseCanInterface(canFDIn)
+
+	canFDOut, err := canlib.SetupCanInterface(*canifaceOut)
+	if err != nil {
+		panic(err)
+	}
+	defer canlib.CloseCanInterface(canFDOut)
+
 	canGlobalChan := make(chan canlib.RawCanFrame, 100)
 	canTargetChan := make(chan canlib.RawCanFrame, 100)
 	canMultiplexOne := make(chan canlib.RawCanFrame, 100)
 	canMultiplexTwo := make(chan canlib.RawCanFrame, 100)
 	output := make(chan canlib.RawCanFrame, 100)
-	err := make(chan error)
+	errChan := make(chan error)
 
-	go canlib.CaptureCan(*canifaceIn, canGlobalChan, err)
-	go canlib.CaptureCan(*canifaceOut, canTargetChan, err)
-	go canlib.SendCanConcurrent(*canifaceOut, canMultiplexOne, err)
+	go canlib.CaptureCan(canFDIn, canGlobalChan, errChan)
+	go canlib.CaptureCan(canFDOut, canTargetChan, errChan)
+	go canlib.SendCanConcurrent(canFDOut, canMultiplexOne, errChan)
 	go globalMultiplex(canGlobalChan, canMultiplexOne, canMultiplexTwo)
 	go processing(canTargetChan, canMultiplexTwo, output)
 

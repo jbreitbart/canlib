@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/buffersandbeer/canlib"
 	"math"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jbreitbart/canlib"
 )
 
 func check(err error) {
@@ -58,9 +59,14 @@ func main() {
 		os.Exit(2)
 	}
 
+	canFD, err := canlib.SetupCanInterface(*caniface)
+	if err != nil {
+		panic(err)
+	}
+	defer canlib.CloseCanInterface(canFD)
+
 	// Convert seed values back to int
 	var dataStart, sizeStart int
-	var err error
 	dataStart, err = strconv.Atoi(splitSeed[1])
 	check(err)
 	sizeStart, err = strconv.Atoi(splitSeed[0])
@@ -72,7 +78,7 @@ func main() {
 	targetIDs := readIds(*targetFile)
 
 	// Start send Can parallel process and fuzzing function
-	go canlib.SendCanConcurrent(*caniface, canout, errChan)
+	go canlib.SendCanConcurrent(canFD, canout, errChan)
 	fuzzCan(targetIDs, canout, *displayPkts, uint64(dataStart), sizeStart, *rateLimit)
 }
 

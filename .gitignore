@@ -3,6 +3,9 @@
 *.dll
 *.so
 *.dylib
+cmd/can-dump/can-dump
+cmd/can-fuzz/can-fuzz
+cmd/can-halfpipe/can-halfpipe
 
 # Test binary, build with `go test -c`
 *.test
