@@ -28,7 +28,6 @@ func SendCan(canInterface CANInterfaceDescriptor, message RawCanFrame) error {
 
 // SendCanConcurrent will utilize a channel to send CAN messages on the given CAN interface
 func SendCanConcurrent(canInterface CANInterfaceDescriptor, canChannel <-chan RawCanFrame, errorChannel chan<- error) {
-
 	for message := range canChannel {
 		err := SendCan(canInterface, message)
 		if err != nil {

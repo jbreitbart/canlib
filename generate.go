@@ -2,18 +2,20 @@ package canlib
 
 import (
 	"errors"
+
 	"golang.org/x/sys/unix"
 )
 
 // CreateRawFrame will take an ID, Data, and Flags to generate a valid RawCanFrame
-func CreateRawFrame(targetFrame *RawCanFrame, id uint32, data []byte, eff bool, rtr bool, err bool) error {
+func CreateRawFrame(id uint32, data []byte, eff bool, rtr bool, err bool) (RawCanFrame, error) {
+	var targetFrame RawCanFrame
 	targetFrame.ID = id
 	targetFrame.Eff = eff
 	targetFrame.Rtr = rtr
 	targetFrame.Err = err
 	dataLength := uint8(len(data))
 	if dataLength > 8 {
-		return errors.New("data too long. Data must be < 8 bytes")
+		return targetFrame, errors.New("data too long. Data must be < 8 bytes")
 	}
 	targetFrame.Dlc = dataLength
 	targetFrame.Data = data
@@ -29,5 +31,5 @@ func CreateRawFrame(targetFrame *RawCanFrame, id uint32, data []byte, eff bool, 
 		oid = oid & unix.CAN_RTR_FLAG
 	}
 	targetFrame.OID = oid
-	return nil
+	return targetFrame, nil
 }

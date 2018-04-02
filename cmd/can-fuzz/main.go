@@ -108,7 +108,6 @@ func readIds(path string) []uint32 {
 
 // fuzzCan will generate fuzz frames for the CAN bus and pass them to the CanSend goroutine via channel
 func fuzzCan(targets []uint32, output chan<- canlib.RawCanFrame, iterBeforeDisplay int, dataStart uint64, sizeStart int, rateLimit int) {
-	fuzzFrame := new(canlib.RawCanFrame)
 	fuzzDataStart := dataStart
 	fuzzSizeStart := sizeStart
 	displayTracker := iterBeforeDisplay
@@ -134,9 +133,12 @@ func fuzzCan(targets []uint32, output chan<- canlib.RawCanFrame, iterBeforeDispl
 
 			// For each ID in the ID list, craft and send the packet
 			for _, target := range targets {
-				canlib.CreateRawFrame(fuzzFrame, uint32(target), fuzzBytes, false, false, false)
+				fuzzFrame, err := canlib.CreateRawFrame(uint32(target), fuzzBytes, false, false, false)
+				if err != nil {
+
+				}
 				fuzzFrame.Timestamp = time.Now().UnixNano()
-				output <- *fuzzFrame
+				output <- fuzzFrame
 				time.Sleep(time.Duration(rateLimit) * time.Millisecond)
 				displayTracker--
 
