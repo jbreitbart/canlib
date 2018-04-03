@@ -7,7 +7,7 @@ import (
 // CompareRawFrames takes two Raw Can Frames and returns true if they are the same frame and false otherwise
 //
 // This comparison is done on all fields and flags except anything time based.
-// Since a Raw Can Frame's OID containes the masked ID and Flags, it is used for comparison to save a bit of computation.
+// Since a Raw Can Frame's OID contains the masked ID and Flags, it is used for comparison to save a bit of computation.
 // Because of this OID comparison, this function is not compatible with CanFrame structs that are built with
 // SocketCan's candump output is not supported. Instead use CompareRawFramesSimple instead.
 func CompareRawFrames(frameOne CanFrame, frameTwo CanFrame) bool {

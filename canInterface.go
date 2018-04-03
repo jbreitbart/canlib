@@ -7,9 +7,10 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// CANInterfaceDescriptor is a can device handler that must be passed to functions using the can bus. Create one with SetupCanInterface.
 type CANInterfaceDescriptor int
 
-// SetupCanInterface will set up a CAN file descriptor to be used with sending and recieving CAN message.
+// SetupCanInterface will set up a CAN file descriptor to be used with sending and receiving CAN message.
 // The function takes a string that specifies the interface to open.
 func SetupCanInterface(canInterface string) (CANInterfaceDescriptor, error) {
 	iface, err := net.InterfaceByName(canInterface)

@@ -15,7 +15,7 @@ func TestSetupCANInterface(t *testing.T) {
 		t.Errorf("Failed can interface close: %v", err)
 	}
 
-	canFD, err = SetupCanInterface("asdf")
+	_, err = SetupCanInterface("asdf")
 	if err == nil {
 		t.Error("Could open CAN device that does not exist: asdf")
 	}

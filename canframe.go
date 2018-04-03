@@ -15,7 +15,7 @@ func (frame CanFrame) ID() uint32 {
 	return frame.OID & unix.CAN_EFF_MASK
 }
 
-// ID returns the remote transmission request bit is set
+// Rtr returns the remote transmission request bit is set
 func (frame CanFrame) Rtr() bool {
 	return (frame.OID & unix.CAN_RTR_FLAG) != 0
 }

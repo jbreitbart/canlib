@@ -126,7 +126,7 @@ func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay 
 			if fuzzSize == 0 {
 				fuzzBytes = make([]byte, 0)
 			} else {
-				for index, _ := range fuzzBytes {
+				for index := range fuzzBytes {
 					fuzzBytes[index] = byte(fuzzData >> uint(8*index))
 				}
 			}

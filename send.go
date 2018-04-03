@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// SendCan will send the provided CAN message on the given CAN interface
+// SendCanFrame will send the provided CAN message on the given CAN interface
 func SendCanFrame(canInterface CANInterfaceDescriptor, message CanFrame) error {
 	if message.Dlc() > 8 {
 		return errors.New("CAN message to send is invalid")
