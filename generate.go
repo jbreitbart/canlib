@@ -28,6 +28,10 @@ func CreateFrameFromByte(array []byte, captureTime int64) (CanFrame, error) {
 func CreateFrame(id uint32, data []byte, rtr bool, err bool) (CanFrame, error) {
 	var ret CanFrame
 
+	if id > unix.CAN_EFF_MASK {
+		return ret, errors.New("ID too large.")
+	}
+
 	ret.OID = id
 
 	// use extened id?
