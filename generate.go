@@ -24,7 +24,7 @@ func CreateFrameFromByte(array []byte, captureTime int64) (CanFrame, error) {
 	return ret, nil
 }
 
-// CreateRawFrame will take an ID, Data, and Flags to generate a valid CanFrame
+// CreateFrame will take an ID, Data, and Flags to generate a valid CanFrame
 func CreateFrame(id uint32, data []byte, rtr bool, err bool) (CanFrame, error) {
 	var ret CanFrame
 

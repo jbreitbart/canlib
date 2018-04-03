@@ -9,23 +9,28 @@ type CanFrame struct {
 	Timestamp int64  // Time message was captured as Unix Timestamp in nanoseconds
 }
 
+// ID returns the ID of the frame
 func (frame CanFrame) ID() uint32 {
 	// remove the top 3 bits
 	return frame.OID & unix.CAN_EFF_MASK
 }
 
+// ID returns the remote transmission request bit is set
 func (frame CanFrame) Rtr() bool {
 	return (frame.OID & unix.CAN_RTR_FLAG) != 0
 }
 
+// Err returns if the frame is an error frame
 func (frame CanFrame) Err() bool {
 	return (frame.OID & unix.CAN_ERR_FLAG) != 0
 }
 
+// Eff returns if this frame is using extended IDs (29bit)
 func (frame CanFrame) Eff() bool {
 	return (frame.OID & unix.CAN_EFF_FLAG) != 0
 }
 
+// Dlc returns the length of the data stored in the frame
 func (frame CanFrame) Dlc() int {
 	return len(frame.Data)
 }
