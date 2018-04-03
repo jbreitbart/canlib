@@ -1,0 +1,23 @@
+language:        go
+sudo:            required
+dist:            trusty
+
+go:
+- '1.10'
+- master
+
+before_install:
+- go get github.com/mattn/goveralls
+- go get golang.org/x/tools/cmd/cover
+- sudo modprobe vcan
+- sudo ip link add dev vcan0 type vcan
+- sudo ip link set up vcan0
+
+script:
+- go get -t -v ./...
+- go test -v -covermode=count -coverprofile=coverage.out ./...
+- "$HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN"
+
+env:
+  global:
+    secure:      euhXnib/9BvkEvDgC+DQ8225ezYiiiJUFV201bAhVys+FRamAq2uV62N5cXYvQbVqOR/eGl6DyYuaiyO3ISbllpkGxKr+Q4xPyBZfgohdHwMwqNftYtnBhAh5iqvuof+icTsp0MVN4ORE+IOlcbOEXIxDwayOV6jQ/NGe9YyDK+9j+saaE/rMK8T25PzP3kqo83emMgV2bIak6RAPa2TGhlFxoKKpkl8ZNSWablPIfGO+uDCpGVZHkmE2u6bV5F+zi405DvoRZF9TiOZc7wOTDZuGm9Rus0SungLrruBohXRU/qRBvq4eMXcvsaqLdF1huVeeQSVccuiQ09uxIkBeHX+l2/l1s8qvGDpi0rDmnxecsMiQAkZrhT5pzGEv8KX+BSAXGz/FBH27s4GjwCYwHQ4wwEguevQ9J691ZLeJ7kNnOB+YFLKyTdrgyoTO4eCl4G/GgbqRHoN+0GUHCSa4/SJGqizSEnyKPYvSVq0JUi6fK6Qbp90ba2Irtk3Y4Nwk0xIupoZO21ACkRwdhU7aMEP6F8BkZDEIxc90Mi9y98bRwMPyyq+tvPhonzEcFDLpGW6S6RdjKD/k8xkQi0ZP2He+gIlBagBvdHTQOXt4MlMlH+sBsBoC5Nex8udNAe9SjSbGaCGUMWa+XbDJQVGhHWwcP8XH0GbYpLgD+6IFl8=

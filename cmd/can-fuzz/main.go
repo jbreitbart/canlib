@@ -133,7 +133,7 @@ func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay 
 
 			// For each ID in the ID list, craft and send the packet
 			for _, target := range targets {
-				fuzzFrame, err := canlib.CreateRawFrame(uint32(target), fuzzBytes, false, false)
+				fuzzFrame, err := canlib.CreateFrame(uint32(target), fuzzBytes, false, false)
 				if err != nil {
 
 				}

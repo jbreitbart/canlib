@@ -1,4 +1,5 @@
 # CANLIB - A GO library and a series of utilities for CAN bus testing
+[![Build Status](https://travis-ci.org/jbreitbart/canlib.svg?branch=master)](https://travis-ci.org/jbreitbart/canlib) [![Coverage Status](https://coveralls.io/repos/github/jbreitbart/canlib/badge.svg?branch=master)](https://coveralls.io/github/jbreitbart/canlib?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/jbreitbart/canlib)](https://goreportcard.com/report/github.com/jbreitbart/canlib)
 
 ## Install
 
