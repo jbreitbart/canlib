@@ -26,6 +26,6 @@ func main() {
 
 func printCan(ch <-chan can.Frame) {
 	for n := range ch {
-		fmt.Println(can.FrameToString(n, " \t"))
+		fmt.Println(n.ToString(" \t"))
 	}
 }

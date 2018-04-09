@@ -73,7 +73,7 @@ func processing(targetChan <-chan can.Frame, globalChan <-chan can.Frame, output
 	for newMessage := range targetChan {
 		mutex.Lock()
 		if can.FrameInSlice(newMessage, seenMessages) == false {
-			can.FrameToString(newMessage, "\t")
+			newMessage.ToString("\t")
 		}
 		mutex.Unlock()
 	}
