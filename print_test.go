@@ -1,18 +1,18 @@
-package canlib
+package can
 
 import (
 	"testing"
 )
 
-// TestCanFrameToString will verify that a CAN message is formatted properly
-func TestCanFrameToString(t *testing.T) {
-	testFrame := CanFrame{
+// TestFrameToString will verify that a CAN message is formatted properly
+func TestFrameToString(t *testing.T) {
+	testFrame := Frame{
 		OID:       1,
 		Data:      []byte{1},
 		Timestamp: 1000000000,
 	}
 	expected := "1,1,NOEFF,NORTR,NOERR,1,1,01"
-	result := CanFrameToString(testFrame, ",")
+	result := testFrame.ToString(",")
 	if expected != result {
 		t.Errorf("%s != %s", expected, result)
 	}
@@ -28,17 +28,17 @@ func TestTimestampToSeconds(t *testing.T) {
 	}
 }
 
-// TestProcessedCanFrameToString makes sure that ProcessedCanFrameToString works
-func TestProcessedCanFrameToString(t *testing.T) {
-	testRawFrame := CanFrame{
+// TestProcessedFrameToString makes sure that ProcessedFrameToString works
+func TestProcessedFrameToString(t *testing.T) {
+	testRawFrame := Frame{
 		OID:       1,
 		Data:      []byte{1},
 		Timestamp: 1000000000,
 	}
-	testProcessedFrame := ProcessedCanFrame{Packet: testRawFrame,
+	testProcessedFrame := ProcessedFrame{Packet: testRawFrame,
 		PacketHash: "testHash"}
 	expected := "testHash,1,1,NOEFF,NORTR,NOERR,1,1,01"
-	result := ProcessedCanFrameToString(testProcessedFrame, ",")
+	result := testProcessedFrame.ToString(",")
 	if expected != result {
 		t.Errorf("%s != %s", expected, result)
 	}

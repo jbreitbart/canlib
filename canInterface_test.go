@@ -1,4 +1,4 @@
-package canlib
+package can
 
 import "testing"
 

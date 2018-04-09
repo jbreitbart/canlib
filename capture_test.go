@@ -1,4 +1,4 @@
-package canlib
+package can
 
 import (
 	"fmt"
@@ -55,17 +55,17 @@ func TestCaptureSend(t *testing.T) {
 
 }
 
-func sendReceiveExpect(canFD0 CANInterfaceDescriptor, canFD1 CANInterfaceDescriptor, sendFrame CanFrame, expectFrame CanFrame) (bool, error) {
-	frameChan := make(chan CanFrame)
+func sendReceiveExpect(canFD0 InterfaceDescriptor, canFD1 InterfaceDescriptor, sendFrame Frame, expectFrame Frame) (bool, error) {
+	frameChan := make(chan Frame)
 	errChan := make(chan error)
 
 	go ReceiveNFrames(canFD0, 1, frameChan, errChan)
-	err := SendCanFrame(canFD1, sendFrame)
+	err := SendFrame(canFD1, sendFrame)
 
 	if err != nil {
 		return false, fmt.Errorf("Error while sending frame: %v", err)
 	}
 
 	rFrame := <-frameChan
-	return CompareRawFrames(rFrame, expectFrame), nil
+	return CompareFrames(rFrame, expectFrame), nil
 }

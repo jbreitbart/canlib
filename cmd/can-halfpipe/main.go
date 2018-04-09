@@ -13,28 +13,28 @@ func main() {
 	canifaceOut := flag.String("target", "vcan1", "The CAN interface to pipe to")
 	flag.Parse()
 
-	canFDIn, err := canlib.SetupCanInterface(*canifaceIn)
+	canFDIn, err := can.SetupCanInterface(*canifaceIn)
 	if err != nil {
 		panic(err)
 	}
-	defer canlib.CloseCanInterface(canFDIn)
+	defer can.CloseCanInterface(canFDIn)
 
-	canFDOut, err := canlib.SetupCanInterface(*canifaceOut)
+	canFDOut, err := can.SetupCanInterface(*canifaceOut)
 	if err != nil {
 		panic(err)
 	}
-	defer canlib.CloseCanInterface(canFDOut)
+	defer can.CloseCanInterface(canFDOut)
 
-	canGlobalChan := make(chan canlib.CanFrame, 100)
-	canTargetChan := make(chan canlib.CanFrame, 100)
-	canMultiplexOne := make(chan canlib.CanFrame, 100)
-	canMultiplexTwo := make(chan canlib.CanFrame, 100)
-	output := make(chan canlib.CanFrame, 100)
+	canGlobalChan := make(chan can.Frame, 100)
+	canTargetChan := make(chan can.Frame, 100)
+	canMultiplexOne := make(chan can.Frame, 100)
+	canMultiplexTwo := make(chan can.Frame, 100)
+	output := make(chan can.Frame, 100)
 	errChan := make(chan error)
 
-	go canlib.CaptureCan(canFDIn, canGlobalChan, errChan)
-	go canlib.CaptureCan(canFDOut, canTargetChan, errChan)
-	go canlib.SendCanConcurrent(canFDOut, canMultiplexOne, errChan)
+	go can.CaptureCan(canFDIn, canGlobalChan, errChan)
+	go can.CaptureCan(canFDOut, canTargetChan, errChan)
+	go can.SendConcurrent(canFDOut, canMultiplexOne, errChan)
 	go globalMultiplex(canGlobalChan, canMultiplexOne, canMultiplexTwo)
 	go processing(canTargetChan, canMultiplexTwo, output)
 
@@ -45,8 +45,8 @@ func main() {
 }
 
 // globalMultiplex will read a value from globalChan and sent that value to both mplexOne and mplexTwo
-func globalMultiplex(globalChan <-chan canlib.CanFrame, mplexOne chan<- canlib.CanFrame,
-	mplexTwo chan<- canlib.CanFrame) {
+func globalMultiplex(globalChan <-chan can.Frame, mplexOne chan<- can.Frame,
+	mplexTwo chan<- can.Frame) {
 
 	for message := range globalChan {
 		mplexOne <- message
@@ -56,14 +56,14 @@ func globalMultiplex(globalChan <-chan canlib.CanFrame, mplexOne chan<- canlib.C
 }
 
 // processing will start another process to load an array of known messages and then diff that with the target captures
-func processing(targetChan <-chan canlib.CanFrame, globalChan <-chan canlib.CanFrame, output chan<- canlib.CanFrame) {
-	var seenMessages = []canlib.CanFrame{}
+func processing(targetChan <-chan can.Frame, globalChan <-chan can.Frame, output chan<- can.Frame) {
+	var seenMessages = []can.Frame{}
 	var mutex = &sync.Mutex{}
 
 	go func() {
 		for globalMessage := range globalChan {
 			mutex.Lock()
-			if canlib.RawFrameInSlice(globalMessage, seenMessages) == false {
+			if can.FrameInSlice(globalMessage, seenMessages) == false {
 				seenMessages = append(seenMessages, globalMessage)
 			}
 			mutex.Unlock()
@@ -72,8 +72,8 @@ func processing(targetChan <-chan canlib.CanFrame, globalChan <-chan canlib.CanF
 
 	for newMessage := range targetChan {
 		mutex.Lock()
-		if canlib.RawFrameInSlice(newMessage, seenMessages) == false {
-			canlib.CanFrameToString(newMessage, "\t")
+		if can.FrameInSlice(newMessage, seenMessages) == false {
+			can.FrameToString(newMessage, "\t")
 		}
 		mutex.Unlock()
 	}

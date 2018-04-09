@@ -59,11 +59,11 @@ func main() {
 		os.Exit(2)
 	}
 
-	canFD, err := canlib.SetupCanInterface(*caniface)
+	canFD, err := can.SetupCanInterface(*caniface)
 	if err != nil {
 		panic(err)
 	}
-	defer canlib.CloseCanInterface(canFD)
+	defer can.CloseCanInterface(canFD)
 
 	// Convert seed values back to int
 	var dataStart, sizeStart int
@@ -73,12 +73,12 @@ func main() {
 	check(err)
 
 	// Create channels
-	canout := make(chan canlib.CanFrame, 100)
+	canout := make(chan can.Frame, 100)
 	errChan := make(chan error)
 	targetIDs := readIds(*targetFile)
 
 	// Start send Can parallel process and fuzzing function
-	go canlib.SendCanConcurrent(canFD, canout, errChan)
+	go can.SendConcurrent(canFD, canout, errChan)
 	fuzzCan(targetIDs, canout, *displayPkts, uint64(dataStart), sizeStart, *rateLimit)
 }
 
@@ -107,7 +107,7 @@ func readIds(path string) []uint32 {
 }
 
 // fuzzCan will generate fuzz frames for the CAN bus and pass them to the CanSend goroutine via channel
-func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay int, dataStart uint64, sizeStart int, rateLimit int) {
+func fuzzCan(targets []uint32, output chan<- can.Frame, iterBeforeDisplay int, dataStart uint64, sizeStart int, rateLimit int) {
 	fuzzDataStart := dataStart
 	fuzzSizeStart := sizeStart
 	displayTracker := iterBeforeDisplay
@@ -133,7 +133,7 @@ func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay 
 
 			// For each ID in the ID list, craft and send the packet
 			for _, target := range targets {
-				fuzzFrame, err := canlib.CreateFrame(uint32(target), fuzzBytes, false, false)
+				fuzzFrame, err := can.CreateFrame(uint32(target), fuzzBytes, false, false)
 				if err != nil {
 
 				}
@@ -145,7 +145,7 @@ func fuzzCan(targets []uint32, output chan<- canlib.CanFrame, iterBeforeDisplay 
 				// Print seed
 				if displayTracker == 0 {
 					displayTracker = iterBeforeDisplay
-					timestamp := canlib.TimestampToSeconds(time.Now().UnixNano())
+					timestamp := can.TimestampToSeconds(time.Now().UnixNano())
 					timestr := strconv.FormatFloat(timestamp, 'f', -1, 64)
 					fmt.Println(timestr, "\t", fmt.Sprintf("%dx%d", fuzzSize, fuzzData))
 				}

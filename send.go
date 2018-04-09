@@ -1,4 +1,4 @@
-package canlib
+package can
 
 import (
 	"encoding/binary"
@@ -8,8 +8,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// SendCanFrame will send the provided CAN message on the given CAN interface
-func SendCanFrame(canInterface CANInterfaceDescriptor, message CanFrame) error {
+// SendFrame will send the provided CAN message on the given CAN interface
+func SendFrame(canInterface InterfaceDescriptor, message Frame) error {
 	if message.Dlc() > 8 {
 		return errors.New("CAN message to send is invalid")
 	}
@@ -26,10 +26,10 @@ func SendCanFrame(canInterface CANInterfaceDescriptor, message CanFrame) error {
 	return err
 }
 
-// SendCanConcurrent will utilize a channel to send CAN messages on the given CAN interface
-func SendCanConcurrent(canInterface CANInterfaceDescriptor, canChannel <-chan CanFrame, errorChannel chan<- error) {
+// SendConcurrent will utilize a channel to send CAN messages on the given CAN interface
+func SendConcurrent(canInterface InterfaceDescriptor, canChannel <-chan Frame, errorChannel chan<- error) {
 	for message := range canChannel {
-		err := SendCanFrame(canInterface, message)
+		err := SendFrame(canInterface, message)
 		if err != nil {
 			errorChannel <- err
 		}

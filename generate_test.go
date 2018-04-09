@@ -1,4 +1,4 @@
-package canlib
+package can
 
 import (
 	"fmt"
@@ -7,14 +7,14 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// TestCreateFrame checks that CreateFrame appropriately creates a CanFrame
+// TestCreateFrame checks that CreateFrame appropriately creates a Frame
 func TestCreateFrame(t *testing.T) {
-	expected := CanFrame{Data: []byte{1}, OID: 1}
+	expected := Frame{Data: []byte{1}, OID: 1}
 	result, err := CreateFrame(1, []byte{1}, false, false)
 	if err != nil {
 		t.Error("CreateFrame returned an error: " + err.Error())
 	}
-	if !CompareRawFrames(expected, result) {
+	if !CompareFrames(expected, result) {
 		t.Errorf(fmt.Sprintf("%v != %v", result, expected))
 	}
 

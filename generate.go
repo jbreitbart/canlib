@@ -1,4 +1,4 @@
-package canlib
+package can
 
 import (
 	"encoding/binary"
@@ -7,9 +7,9 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// CreateFrameFromByte will take an byte array and tries to create a can CanFrame
-func CreateFrameFromByte(array []byte, captureTime int64) (CanFrame, error) {
-	var ret CanFrame
+// CreateFrameFromByte will take an byte array and tries to create a can Frame
+func CreateFrameFromByte(array []byte, captureTime int64) (Frame, error) {
+	var ret Frame
 
 	ret.OID = binary.LittleEndian.Uint32(array[0:4])
 
@@ -24,9 +24,9 @@ func CreateFrameFromByte(array []byte, captureTime int64) (CanFrame, error) {
 	return ret, nil
 }
 
-// CreateFrame will take an ID, Data, and Flags to generate a valid CanFrame
-func CreateFrame(id uint32, data []byte, rtr bool, err bool) (CanFrame, error) {
-	var ret CanFrame
+// CreateFrame will take an ID, Data, and Flags to generate a valid Frame
+func CreateFrame(id uint32, data []byte, rtr bool, err bool) (Frame, error) {
+	var ret Frame
 
 	if id > unix.CAN_EFF_MASK {
 		return ret, errors.New("ID too large.")

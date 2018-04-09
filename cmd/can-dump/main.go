@@ -11,21 +11,21 @@ func main() {
 	caniface := flag.String("canif", "vcan0", "The CAN interface to capture on")
 	flag.Parse()
 
-	canFD, err := canlib.SetupCanInterface(*caniface)
+	canFD, err := can.SetupCanInterface(*caniface)
 	if err != nil {
 		panic(err)
 	}
-	defer canlib.CloseCanInterface(canFD)
+	defer can.CloseCanInterface(canFD)
 
-	c := make(chan canlib.CanFrame, 100)
+	c := make(chan can.Frame, 100)
 	errChan := make(chan error)
-	go canlib.CaptureCan(canFD, c, errChan)
+	go can.CaptureCan(canFD, c, errChan)
 	go printCan(c)
 	<-errChan
 }
 
-func printCan(ch <-chan canlib.CanFrame) {
+func printCan(ch <-chan can.Frame) {
 	for n := range ch {
-		fmt.Println(canlib.CanFrameToString(n, " \t"))
+		fmt.Println(can.FrameToString(n, " \t"))
 	}
 }

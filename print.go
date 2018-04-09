@@ -1,15 +1,15 @@
-package canlib
+package can
 
 import (
 	"fmt"
 	"strconv"
 )
 
-// CanFrameToString takes a CanFrame and makes it look pretty based on several parameters
+// ToString takes a Frame and makes it look pretty based on several parameters
 //
-// This function is designed to be used to prepare a CanFrame for multiple output formats
+// This function is designed to be used to prepare a Frame for multiple output formats
 // including stdout, csv, and other custom delimited formats.
-func CanFrameToString(frame CanFrame, delimiter string) string {
+func (frame Frame) ToString(delimiter string) string {
 	var frameString string
 	timestamp := TimestampToSeconds(frame.Timestamp)
 	frameString += strconv.FormatFloat(timestamp, 'f', -1, 64) + delimiter
@@ -41,13 +41,13 @@ func TimestampToSeconds(timestamp int64) float64 {
 	return floatTime * 0.000000001
 }
 
-// ProcessedCanFrameToString takes a ProcessedCanFrame and formats it based on several parameters
+// ToString takes a ProcessedFrame and formats it based on several parameters
 //
-// This function is designed to be used to prepare a CanFrame for multiple output formats
+// This function is designed to be used to prepare a Frame for multiple output formats
 // including stdout, csv, and other custom delimited formats.
-func ProcessedCanFrameToString(frame ProcessedCanFrame, delimiter string) string {
+func (frame ProcessedFrame) ToString(delimiter string) string {
 	var frameString string
 	frameString += frame.PacketHash + delimiter
-	frameString += CanFrameToString(frame.Packet, delimiter)
+	frameString += frame.Packet.ToString(delimiter)
 	return frameString
 }

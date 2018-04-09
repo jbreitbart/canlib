@@ -1,84 +1,84 @@
-package canlib
+package can
 
 import (
 	"testing"
 )
 
-// TestRawFrameInSlice will check that RawFrameInSlice returns true if a given CanFrame exists in a slice
-func TestRawFrameInSlice(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	testSlice := make([]CanFrame, 1)
+// TestFrameInSlice will check that FrameInSlice returns true if a given Frame exists in a slice
+func TestFrameInSlice(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	testSlice := make([]Frame, 1)
 	testSlice = append(testSlice, testFrame)
-	result := RawFrameInSlice(testFrame, testSlice)
+	result := FrameInSlice(testFrame, testSlice)
 	if result != true {
 		t.Error("testFrame was not in testSlice")
 	}
 }
 
-// TestRawFrameInSliceFail will check that RawFrameInSlice returns false if a given CanFrame does not exist in a slice
-func TestRawFrameInSliceFail(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	testSlice := make([]CanFrame, 1)
-	result := RawFrameInSlice(testFrame, testSlice)
+// TestFrameInSliceFail will check that FrameInSlice returns false if a given Frame does not exist in a slice
+func TestFrameInSliceFail(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	testSlice := make([]Frame, 1)
+	result := FrameInSlice(testFrame, testSlice)
 	if result == true {
 		t.Error("testFrame was somehow in testSlice")
 	}
 }
 
-// TestCompareRawFrames checks that CompareRawFrames returns true if two CanFrames are the same
-func TestCompareRawFrames(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	result := CompareRawFrames(testFrame, testFrame)
+// TestCompareFrames checks that CompareFrames returns true if two Frames are the same
+func TestCompareFrames(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	result := CompareFrames(testFrame, testFrame)
 	if result != true {
-		t.Error("CompareRawFrames returned false when checking identical frames")
+		t.Error("CompareFrames returned false when checking identical frames")
 	}
 }
 
-// TestCompareRawFramesFail checks that CompareRawFrames returns false if mismatching CanFrames are compared
-func TestCompareRawFramesFail(t *testing.T) {
-	testFrameOne := CanFrame{OID: 1, Data: []byte{1}}
-	testFrameTwo := CanFrame{OID: 2, Data: []byte{1}}
-	result := CompareRawFrames(testFrameOne, testFrameTwo)
+// TestCompareFramesFail checks that CompareFrames returns false if mismatching Frames are compared
+func TestCompareFramesFail(t *testing.T) {
+	testFrameOne := Frame{OID: 1, Data: []byte{1}}
+	testFrameTwo := Frame{OID: 2, Data: []byte{1}}
+	result := CompareFrames(testFrameOne, testFrameTwo)
 	if result == true {
-		t.Error("CompareRawFrames returned true when checking mismatching frames")
+		t.Error("CompareFrames returned true when checking mismatching frames")
 	}
 }
 
-// TestCompareRawFramesSimple checks that CompareRawFramesSimple returns true if two CanFrames are the same
-func TestCompareRawFramesSimple(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	result := CompareRawFramesSimple(testFrame, testFrame)
+// TestCompareFramesSimple checks that CompareFramesSimple returns true if two Frames are the same
+func TestCompareFramesSimple(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	result := CompareFramesSimple(testFrame, testFrame)
 	if result != true {
-		t.Error("CompareRawFramesSimple returned false when checking identical frames")
+		t.Error("CompareFramesSimple returned false when checking identical frames")
 	}
 }
 
-// TestCompareRawFramesSimpleFail checks that CompareRawFrames returns false if mismatching CanFrames are compared
-func TestCompareRawFramesSimpleFail(t *testing.T) {
-	testFrameOne := CanFrame{OID: 1, Data: []byte{1}}
-	testFrameTwo := CanFrame{OID: 2, Data: []byte{1}}
-	result := CompareRawFramesSimple(testFrameOne, testFrameTwo)
+// TestCompareFramesSimpleFail checks that CompareFrames returns false if mismatching Frames are compared
+func TestCompareFramesSimpleFail(t *testing.T) {
+	testFrameOne := Frame{OID: 1, Data: []byte{1}}
+	testFrameTwo := Frame{OID: 2, Data: []byte{1}}
+	result := CompareFramesSimple(testFrameOne, testFrameTwo)
 	if result == true {
-		t.Error("CompareRawFramesSimple returned true when checking mismatching frames")
+		t.Error("CompareFramesSimple returned true when checking mismatching frames")
 	}
 }
 
-// TestRawFrameInSliceSimple will check that RawFrameInSliceSimple returns true if a given CanFrame exists in a slice
-func TestRawFrameInSliceSimple(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	testSlice := make([]CanFrame, 1)
+// TestFrameInSliceSimple will check that FrameInSliceSimple returns true if a given Frame exists in a slice
+func TestFrameInSliceSimple(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	testSlice := make([]Frame, 1)
 	testSlice = append(testSlice, testFrame)
-	result := RawFrameInSliceSimple(testFrame, testSlice)
+	result := FrameInSliceSimple(testFrame, testSlice)
 	if result != true {
 		t.Error("testFrame was not in testSlice")
 	}
 }
 
-// TestRawFrameInSliceSimpleFail will check that RawFrameInSlice returns false if a given CanFrame does not exist in a slice
-func TestRawFrameInSliceSimpleFail(t *testing.T) {
-	testFrame := CanFrame{OID: 1, Data: []byte{1}}
-	testSlice := make([]CanFrame, 1)
-	result := RawFrameInSliceSimple(testFrame, testSlice)
+// TestFrameInSliceSimpleFail will check that FrameInSlice returns false if a given Frame does not exist in a slice
+func TestFrameInSliceSimpleFail(t *testing.T) {
+	testFrame := Frame{OID: 1, Data: []byte{1}}
+	testSlice := make([]Frame, 1)
+	result := FrameInSliceSimple(testFrame, testSlice)
 	if result == true {
 		t.Error("testFrame was somehow in testSlice")
 	}
