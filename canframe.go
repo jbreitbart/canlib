@@ -37,7 +37,7 @@ func (frame Frame) Dlc() int {
 
 // ProcessedFrame represents a CAN packet and additional data about the packet
 type ProcessedFrame struct {
-	Packet       Frame // CAN packet
-	PacketHash   string   // md5 hash of the Packet's ID and Data fields
-	AlphaNumData string   // Any Alpha-numeric data within the can payload
+	Packet       Frame  // CAN packet
+	PacketHash   string // md5 hash of the Packet's ID and Data fields
+	AlphaNumData string // Any Alpha-numeric data within the can payload
 }

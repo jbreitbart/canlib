@@ -7,7 +7,7 @@ import (
 	"github.com/jbreitbart/canlib"
 )
 
-type CanInstance struct {
+type canInstance struct {
 	frame can.Frame
 	src   int
 }
@@ -21,7 +21,7 @@ func main() {
 	canGlobalOut := make(chan can.Frame, 1)
 	canTargetIn := make(chan can.Frame, 100)
 	canTargetOut := make(chan can.Frame, 1)
-	ctcInput := make(chan CanInstance)
+	ctcInput := make(chan canInstance)
 	errChan := make(chan error)
 
 	canGlobal, err := can.SetupCanInterface(*canGlobalStr)
@@ -47,12 +47,12 @@ func main() {
 	canTrafficControl(ctcInput, canTargetOut, canGlobalOut)
 }
 
-func canTrafficControl(input <-chan CanInstance, targetOut chan<- can.Frame, globalOut chan<- can.Frame) {
-	history := []CanInstance{}
+func canTrafficControl(input <-chan canInstance, targetOut chan<- can.Frame, globalOut chan<- can.Frame) {
+	history := []canInstance{}
 	printTemplate := "%s:\t%s\n"
 	for update := range input {
 		known := false
-		var lastSeen CanInstance
+		var lastSeen canInstance
 
 		for _, entry := range history {
 			known = can.CompareFrames(entry.frame, update.frame)
@@ -77,9 +77,9 @@ func canTrafficControl(input <-chan CanInstance, targetOut chan<- can.Frame, glo
 	}
 }
 
-func processFrames(captureChan <-chan can.Frame, ctcChan chan<- CanInstance, id int) {
+func processFrames(captureChan <-chan can.Frame, ctcChan chan<- canInstance, id int) {
 	for newMessage := range captureChan {
-		newInstance := CanInstance{
+		newInstance := canInstance{
 			frame: newMessage,
 			src:   id,
 		}
