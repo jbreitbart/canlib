@@ -57,4 +57,19 @@ func TestBrokenCreateFrame(t *testing.T) {
 	if err == nil {
 		t.Error("CreateFrame created a frame with more than 8 bytes of payload.")
 	}
+
+	_, err = CreateFrameFromByte([]byte{0, 0, 0, 0, 0}, 0)
+	if err == nil {
+		t.Error("CreateFrame created a frame with not enough bytes.")
+	}
+
+	_, err = CreateFrameFromByte([]byte{0, 0, 0, 0, 20, 0}, 0)
+	if err == nil {
+		t.Error("CreateFrame created a frame with more than 8 bytes of payload.")
+	}
+
+	_, err = CreateFrameFromByte([]byte{0, 0, 0, 0, 8, 0}, 0)
+	if err == nil {
+		t.Error("CreateFrame created a frame with not enough bytes.")
+	}
 }

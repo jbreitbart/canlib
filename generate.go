@@ -17,6 +17,9 @@ func CreateFrameFromByte(array []byte, captureTime int64) (*Frame, error) {
 	if Dlc > 8 {
 		return nil, errors.New("data too long. Data must be < 8 bytes")
 	}
+	if len(array) < 8+int(Dlc) {
+		return nil, errors.New("Not enough data to create frame")
+	}
 	ret.Data = array[8 : 8+Dlc]
 
 	ret.Timestamp = captureTime
@@ -29,7 +32,7 @@ func CreateFrame(id uint32, data []byte, rtr bool, err bool) (*Frame, error) {
 	var ret Frame
 
 	if id > unix.CAN_EFF_MASK {
-		return nil, errors.New("ID too large.")
+		return nil, errors.New("ID too large")
 	}
 
 	ret.OID = id
