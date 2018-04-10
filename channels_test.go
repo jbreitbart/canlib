@@ -6,17 +6,15 @@ import (
 
 // TestChannelMultiplexWorks will test ChannelMultiplex to ensure input messaegs reach output
 func TestChannelMultiplexWorks(t *testing.T) {
-	message := Frame{OID: 555}
-	res1 := Frame{}
-	res2 := Frame{}
-	canIn := make(chan Frame)
-	out1 := make(chan Frame)
-	out2 := make(chan Frame)
+	message := &Frame{OID: 555}
+	canIn := make(chan *Frame)
+	out1 := make(chan *Frame)
+	out2 := make(chan *Frame)
 
 	go ChannelMultiplex(canIn, out1, out2)
 	canIn <- message
-	res1 = <-out1
-	res2 = <-out2
+	res1 := <-out1
+	res2 := <-out2
 	close(canIn)
 
 	if !CompareFrames(res1, message) {

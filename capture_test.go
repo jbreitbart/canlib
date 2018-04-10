@@ -55,8 +55,8 @@ func TestCaptureSend(t *testing.T) {
 
 }
 
-func sendReceiveExpect(canFD0 InterfaceDescriptor, canFD1 InterfaceDescriptor, sendFrame Frame, expectFrame Frame) (bool, error) {
-	frameChan := make(chan Frame)
+func sendReceiveExpect(canFD0 InterfaceDescriptor, canFD1 InterfaceDescriptor, sendFrame *Frame, expectFrame *Frame) (bool, error) {
+	frameChan := make(chan *Frame)
 	errChan := make(chan error)
 
 	go ReceiveNFrames(canFD0, 1, frameChan, errChan)

@@ -17,10 +17,10 @@ func main() {
 	canTargetStr := flag.String("target", "", "The CAN interface for the targeted CAN device")
 	flag.Parse()
 
-	canGlobalIn := make(chan can.Frame, 100)
-	canGlobalOut := make(chan can.Frame, 1)
-	canTargetIn := make(chan can.Frame, 100)
-	canTargetOut := make(chan can.Frame, 1)
+	canGlobalIn := make(chan *can.Frame, 100)
+	canGlobalOut := make(chan *can.Frame, 1)
+	canTargetIn := make(chan *can.Frame, 100)
+	canTargetOut := make(chan *can.Frame, 1)
 	ctcInput := make(chan canInstance)
 	errChan := make(chan error)
 
@@ -47,7 +47,7 @@ func main() {
 	canTrafficControl(ctcInput, canTargetOut, canGlobalOut)
 }
 
-func canTrafficControl(input <-chan canInstance, targetOut chan<- can.Frame, globalOut chan<- can.Frame) {
+func canTrafficControl(input <-chan canInstance, targetOut chan<- *can.Frame, globalOut chan<- *can.Frame) {
 	history := []canInstance{}
 	printTemplate := "%s:\t%s\n"
 	for update := range input {
@@ -55,7 +55,7 @@ func canTrafficControl(input <-chan canInstance, targetOut chan<- can.Frame, glo
 		var lastSeen canInstance
 
 		for _, entry := range history {
-			known = can.CompareFrames(entry.frame, update.frame)
+			known = can.CompareFrames(&entry.frame, &update.frame)
 			if known != false {
 				lastSeen = entry
 				break
@@ -69,18 +69,18 @@ func canTrafficControl(input <-chan canInstance, targetOut chan<- can.Frame, glo
 
 		if update.src == 1 {
 			fmt.Printf(printTemplate, "target", lastSeen.frame.ToString(" "))
-			globalOut <- lastSeen.frame
+			globalOut <- &lastSeen.frame
 		} else if update.src == 0 {
 			fmt.Printf(printTemplate, "global", lastSeen.frame.ToString(" "))
-			targetOut <- lastSeen.frame
+			targetOut <- &lastSeen.frame
 		}
 	}
 }
 
-func processFrames(captureChan <-chan can.Frame, ctcChan chan<- canInstance, id int) {
+func processFrames(captureChan <-chan *can.Frame, ctcChan chan<- canInstance, id int) {
 	for newMessage := range captureChan {
 		newInstance := canInstance{
-			frame: newMessage,
+			frame: *newMessage,
 			src:   id,
 		}
 		ctcChan <- newInstance

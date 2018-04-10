@@ -9,7 +9,7 @@ import (
 
 // TestCreateFrame checks that CreateFrame appropriately creates a Frame
 func TestCreateFrame(t *testing.T) {
-	expected := Frame{Data: []byte{1}, OID: 1}
+	expected := &Frame{Data: []byte{1}, OID: 1}
 	result, err := CreateFrame(1, []byte{1}, false, false)
 	if err != nil {
 		t.Error("CreateFrame returned an error: " + err.Error())

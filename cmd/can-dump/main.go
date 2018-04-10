@@ -17,14 +17,14 @@ func main() {
 	}
 	defer can.CloseCanInterface(canFD)
 
-	c := make(chan can.Frame, 100)
+	c := make(chan *can.Frame, 100)
 	errChan := make(chan error)
 	go can.CaptureCan(canFD, c, errChan)
 	go printCan(c)
 	<-errChan
 }
 
-func printCan(ch <-chan can.Frame) {
+func printCan(ch <-chan *can.Frame) {
 	for n := range ch {
 		fmt.Println(n.ToString(" \t"))
 	}
