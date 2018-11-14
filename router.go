@@ -73,7 +73,7 @@ func (r *Router) Unsubscribe(id uint32, ch chan<- *Frame) {
 	r.unsubscribeCh <- t
 }
 
-// Stops the router and drains all of its channels
+// Stop will stop the router and drains all of its channels
 func (r *Router) Stop() {
 	r.stopCh <- true
 }

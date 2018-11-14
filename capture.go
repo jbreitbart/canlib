@@ -15,7 +15,7 @@ func ReceiveFrame(canInterface InterfaceDescriptor) (*Frame, error) {
 		return nil, err
 	}
 	if n != 16 {
-		return nil, fmt.Errorf("Could only write %v of 16 bytes to socket.", n)
+		return nil, fmt.Errorf("could only write %v of 16 bytes to socket", n)
 	}
 
 	captime := time.Now().UnixNano()
